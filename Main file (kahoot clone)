@@ -1,0 +1,202 @@
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+#include <limits>
+#include <cstdlib>
+
+using namespace std;
+
+struct Question {
+		string question;
+		vector<string> options;
+		int correctAnswerIndex;
+};
+
+vector<Question> quiz;
+
+void createQuiz() {
+		int numQuestions;
+		cout << "Enter the number of questions: ";
+		cin >> numQuestions;
+
+		for (int i = 0; i < numQuestions; ++i) {
+				Question question;
+				cin.ignore();
+
+				cout << "Enter question " << i + 1 << ": ";
+				getline(cin, question.question);
+
+				int numOptions;
+				cout << "Enter the number of options for question " << i + 1 << ": ";
+				cin >> numOptions;
+				cin.ignore();
+
+				for (int j = 0; j < numOptions; ++j) {
+						string option;
+						cout << "Enter option " << j + 1 << ": ";
+						getline(cin, option);
+						question.options.push_back(option);
+				}
+
+				cout << "Enter the index of the correct answer (1-" << numOptions << "): ";
+				cin >> question.correctAnswerIndex;
+				question.correctAnswerIndex--;
+
+				quiz.push_back(question);
+		}
+		cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear input buffer
+}
+
+void saveQuiz() {
+		string filename;
+		cout << "Enter the filename to save the quiz (including the extension): ";
+		cin >> filename;
+
+		ofstream file(filename);
+		if (file.is_open()) {
+				for (const auto& question : quiz) {
+						file << question.question << "\n";
+						file << question.options.size() << "\n";
+						for (const auto& option : question.options) {
+								file << option << "\n";
+						}
+						file << question.correctAnswerIndex << "\n";
+				}
+				file.close();
+				cout << "Quiz successfully saved!\n";
+		} else {
+				cout << "Error saving quiz!\n";
+		}
+}
+
+void displayQuiz() {
+		cout << "Quiz:\n";
+		for (int i = 0; i < quiz.size(); ++i) {
+				cout << "Question " << i + 1 << ": " << quiz[i].question << "\n";
+				for (int j = 0; j < quiz[i].options.size(); ++j) {
+						cout << j + 1 << ". " << quiz[i].options[j] << "\n";
+				}
+				cout << "\n";
+		}
+}
+
+void useQuiz() {
+		cout << "\nTaking Quiz...\n";
+
+		// Read the quiz data from the file
+		string filename;
+		cout << "Enter the filename of the quiz to use (including the extension): ";
+		cin >> filename;
+
+		ifstream file(filename);
+		if (file.is_open()) {
+				quiz.clear(); // Clear the existing quiz
+				string line;
+				while (getline(file, line)) {
+						Question question;
+						question.question = line;
+
+						int numOptions;
+						file >> numOptions;
+						file.ignore();
+
+						for (int i = 0; i < numOptions; ++i) {
+								getline(file, line);
+								question.options.push_back(line);
+						}
+
+						file >> question.correctAnswerIndex;
+						file.ignore();
+
+						quiz.push_back(question);
+				}
+				file.close();
+
+				// Display the quiz to the user
+				displayQuiz();
+
+				// Add your code for taking the quiz here
+				int totalCorrectAnswers = 0;
+				int totalQuestions = quiz.size();
+				for (int i = 0; i < totalQuestions; ++i) {
+						cout << "Question: " << quiz[i].question << "\nOptions: ";
+						for (int j = 0; j < quiz[i].options.size(); ++j) {
+								cout << j + 1 << ". " << quiz[i].options[j] << "   ";
+						}
+						cout << "\nEnter your answer (1-" << quiz[i].options.size() << "): ";
+						int userAnswer;
+						cin >> userAnswer;
+						if (userAnswer == quiz[i].correctAnswerIndex + 1) {
+								cout << "Correct!\n";
+								totalCorrectAnswers++;
+						} else {
+								cout << "Incorrect!\n";
+						}
+				}
+				double percentage = (double(totalCorrectAnswers) / totalQuestions) * 100;
+				cout << "\nQuiz finished! You scored " << totalCorrectAnswers << "/" << totalQuestions
+						<< " (" << percentage << "%).\n";
+
+		} else {
+				cout << "No previous quiz found!\n";
+		}
+}
+
+void deleteAccountFile() {
+		string filename;
+		cout << "Enter the filename of the account file to delete (including the extension): ";
+		cin >> filename;
+
+		if (remove(filename.c_str()) != 0) {
+				cout << "Error deleting account file!\n";
+		} else {
+				cout << "Account file successfully deleted!\n";
+		}
+}
+
+void executePythonScript() {
+		cout << "Python scripts cannot be executed in C++.\n";
+}
+
+int main() {
+		int choice;
+
+		while (true) {
+				cout << "\nMain Menu\n";
+				cout << "1. Use Quiz\n";
+				cout << "2. Make Quiz\n";
+				cout << "3. Save Quiz\n";
+				cout << "4. Start Chat\n";
+				cout << "5. Delete Account File\n"; // Added option to delete account file
+				cout << "6. Quit\n"; // Changed option 5 to 6
+				cout << "Enter your choice: ";
+				cin >> choice;
+
+				switch (choice) {
+						case 1:
+								useQuiz();
+								break;
+						case 2:
+								createQuiz();
+								cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Clear input buffer
+								break;
+						case 3:
+								saveQuiz();
+								break;
+						case 4:
+								// Add your code for starting the chat here
+								break;
+						case 5:
+								deleteAccountFile(); // Added case to delete account file
+								break;
+						case 6:
+								executePythonScript(); // Added case to execute Python script
+								cout << "Quitting...\n";
+								return 0;
+						default:
+								cout << "Invalid choice. Try again.\n";
+								break;
+				}
+		}
+}
