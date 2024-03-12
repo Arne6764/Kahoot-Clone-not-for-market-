@@ -116,7 +116,6 @@ void useQuiz() {
 				// Display the quiz to the user
 				displayQuiz();
 
-				// Add your code for taking the quiz here
 				int totalCorrectAnswers = 0;
 				int totalQuestions = quiz.size();
 				for (int i = 0; i < totalQuestions; ++i) {
