@@ -7,3 +7,8 @@ pleasee keep this in mind and plz dont sue me.
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 If you want to run the code in the place it was developed, go to https://www.replit.com and make a c++ project and copy the code into there.
+
+
+
+
+small but important note: you ***must*** rename the main file to "main.cpp", this is a small error on my part for not giving it the proper file name and i do not have a method to rectify this mistake. sorry for any inconvenience...
